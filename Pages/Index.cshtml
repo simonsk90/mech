@@ -1,0 +1,75 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<h1>Welcome to htmx.NET</h1>
+
+<div>
+    test:
+    @await Html.PartialAsync("~/Views/Data/GetData.cshtml", new Models.MyViewModel() {Message= "abc", Items = new List<Models.MyItem>()})
+</div>
+
+<button hx-get="/api/data" hx-target="#result">Load Data</button>
+@* <button hx-get="@Url.Page("./Test")" hx-target="#result">Load Data</button> *@
+<div id="result"></div>
+
+<div>
+    <button hx-post="" hx-target="#counter">
+        Increment
+    </button>
+</div>
+
+<div>
+    <h2 id="counter">
+        <span>0</span>
+    </h2>
+</div>
+
+@section scripts {
+    <script src="~/dist/bundle.js"></script>
+    @* <script src="https://unpkg.com/htmx.org@1.9.10"></script> *@
+    <script>console.log("looog")</script>
+    <script>
+        @* if (!document.body.attributes.__htmx_antiforgery) {
+            debugger;
+            document.addEventListener("htmx:configRequest", evt => {
+                let httpVerb = evt.detail.verb.toUpperCase();
+                if (httpVerb === 'GET') return;
+                let antiForgery = htmx.config.antiForgery;
+                if (antiForgery) {
+                    // already specified on form, short circuit
+                    if (evt.detail.parameters[antiForgery.formFieldName])
+                        return;
+
+                    if (antiForgery.headerName) {
+                        evt.detail.headers[antiForgery.headerName]
+                            = antiForgery.requestToken;
+                    } else {
+                        evt.detail.parameters[antiForgery.formFieldName]
+                            = antiForgery.requestToken;
+                    }
+                }
+            });
+            document.addEventListener("htmx:afterOnLoad", evt => {
+                if (evt.detail.boosted) {
+                    const parser = new DOMParser();
+                    const html = parser.parseFromString(evt.detail.xhr.responseText, 'text/html');
+                    const selector = 'meta[name=htmx-config]';
+                    const config = html.querySelector(selector);
+                    if (config) {
+                        const current = document.querySelector(selector);
+                        // only change the anti-forgery token
+                        const key = 'antiForgery';
+                        htmx.config[key] = JSON.parse(config.attributes['content'].value)[key];
+                        // update DOM, probably not necessary, but for sanity's sake
+                        current.replaceWith(config);
+                    }
+                }
+            });
+            document.body.attributes.__htmx_antiforgery = true;
+        } *@
+
+    </script>
+}
